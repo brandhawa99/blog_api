@@ -11,9 +11,9 @@ router.get('/posts', postController.posts_get);
 //gets a certain post and its comments
 router.get('/posts/:id',postController.get_post_by_id);
 
-router.post('/signup',userController.user_signup_post);
+// router.post('/signup',userController.user_signup_post);
 
-router.post('/login', userController.user_login_post);
+// router.post('/login', userController.user_login_post);
 
 
 
