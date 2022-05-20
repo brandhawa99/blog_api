@@ -8,6 +8,7 @@ const PostSchema = new Schema({
   blog:{type:String,minlength:1, required:true},
   timestamp:{type:Date,default: Date.now()},
   public:{type:Boolean, default:true},
+  comments:[{type:Schema.Types.ObjectId, ref:'Comment'}]
 });
 
 PostSchema
@@ -16,5 +17,11 @@ PostSchema
   let date = DateTime.fromJSDate(this.timestamp).toLocaleString(DateTime.DATETIME_MED);
   return date;
 })
+
+PostSchema
+  .virtual('url')
+  .get(function(){
+    return '/posts/'+this._id
+  })
 
 module.exports = mongoose.model("Post",PostSchema);
