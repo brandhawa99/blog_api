@@ -37,7 +37,7 @@ exports.user_signup_post = [
           }).save(err =>{
             if(err){
               res.status(400);
-              return next(err)
+              return next(err);
             }
           })
         })
@@ -46,30 +46,30 @@ exports.user_signup_post = [
   }
 ]
 
-exports.user_login_post = [
+// exports.user_login_post = [
   
 
-  // (req,res,next) =>{
-  //   passport.authenticate('local',{session:false}, (err,user,info)=>{
-  //     if(err || !user){
-  //       return res.status(400).json({
-  //         message:'something is not right',
-  //         user:user
-  //       })
-  //     }
-  //     req.login(user,{session:false},(err) =>{
-  //       // if(err){
-  //       //   res.send(err);
-  //       //   next(err);
-  //       // }
-  //       //generate a signed json web toekn with the contents of user obj
-  //       const token = jwt.sign(user,'cats_secret');
-  //       return res.json({user,token})
+//   // (req,res,next) =>{
+//   //   passport.authenticate('local',{session:false}, (err,user,info)=>{
+//   //     if(err || !user){
+//   //       return res.status(400).json({
+//   //         message:'something is not right',
+//   //         user:user
+//   //       })
+//   //     }
+//   //     req.login(user,{session:false},(err) =>{
+//   //       // if(err){
+//   //       //   res.send(err);
+//   //       //   next(err);
+//   //       // }
+//   //       //generate a signed json web toekn with the contents of user obj
+//   //       const token = jwt.sign(user,'cats_secret');
+//   //       return res.json({user,token})
 
-  //     })
-  //   })(req,res);
+//   //     })
+//   //   })(req,res);
 
-  // }
-]
+//   // }
+// ]
 
 
