@@ -24,7 +24,6 @@ passport.use(new LocalStrategy({
   }
 ))
 
-
 passport.use(new JWTStrategy({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: 'cats_secret'
@@ -37,5 +36,4 @@ passport.use(new JWTStrategy({
         return cb(error);
     }
   }
-
 ))
