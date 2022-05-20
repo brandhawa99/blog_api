@@ -3,13 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const passportJWT = require('passport-jwt');
-const JWTStrategy = passportJWT.Strategy;
-const ExtractJWT = passportJWT.ExtractJwt;
 require('dotenv').config();
-
+require('./passport');
+const passport = require('passport')
 
 //connect to database
 const mongodb = process.env.mongo_URI
@@ -20,7 +16,6 @@ db.on('error',console.error.bind(console,'mongo connection error'));
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-const User = require('./models/User');
 
 var app = express();
 
@@ -31,6 +26,6 @@ app.use(cookieParser());
 
 
 app.use('/', indexRouter);
-app.use('/usr', usersRouter);
+app.use('/user', passport.authenticate('jwt',{session:false}),usersRouter);
 
 module.exports = app;
