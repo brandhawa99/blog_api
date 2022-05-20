@@ -26,23 +26,24 @@ exports.user_signup_post = [
     }),
 
     (req,res,next) =>{
-      console.log(req.body)
       const errors = validationResult(req);
       if(!errors.isEmpty()){
         res.send({errors:errors.array()})
       }else{
-        const user = new User({
-          username:req.body.username,
-          password:req.body.password,
-        }).save(err =>{
-          if(err){ 
-            res.send(err) 
-          }
+        bcrypt.hash(req.body.password,10,(err,hashed)=>{
+          const user = new User({
+            username: req.body.username,
+            password: hashed,
+          }).save(err =>{
+            if(err){
+              res.status(400);
+              return next(err)
+            }
+          })
         })
-      }
-      next();
     }
-
+    next();
+  }
 ]
 
 exports.user_login_post = [
