@@ -8,7 +8,6 @@ const PostSchema = new Schema({
   blog:{type:String,minlength:1, required:true},
   timestamp:{type:Date,default: Date.now()},
   public:{type:Boolean, default:true},
-  comments:[{type:Schema.Types.ObjectId, ref:'Comment'}]
 });
 
 PostSchema
