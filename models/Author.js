@@ -8,4 +8,4 @@ const AuthorSchema = new Schema({
   password:{type:String, required:true},
 })
 
-module.exports = mongoose.model('AuthorSchema', AuthorSchema);
+module.exports = mongoose.model('Author', AuthorSchema);
