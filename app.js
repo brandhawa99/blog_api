@@ -18,13 +18,14 @@ db.on('error',console.error.bind(console,'mongo connection error'));
 passport.use(JWTStrategy)
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var authorRouter = require('./routes/users');
 var authRouter = require('./routes/auth')
 
 var app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
+app.use(passport.initialize());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.options('*',cors());
@@ -33,7 +34,7 @@ app.use(cors());
 
 app.use('/', indexRouter);
 app.use('/auth',authRouter);
-app.use('/user',usersRouter);
+app.use('/author',passport.authenticate('jwt',{session:false}),authorRouter);
 
 // app.use(function(req,res,next){
 //   next(createError(404))
