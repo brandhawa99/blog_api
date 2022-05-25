@@ -3,9 +3,44 @@ const bcrypt = require('bcryptjs');
 const Author = require('../models/Author');
 
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 
 exports.author_signup_post = [
+
+  (req,res,next) => {
+
+    bcrypt.hash(req.body.password, 10,(err,hashed) =>{
+      
+      const author = new Author({
+        first_name : req.body.first_name,
+        last_name: req.body.last_name,
+        username: req.body.username,
+        password: hashed,
+      })
+      author.save(function(err){
+        if(err){
+          res.status(400).send({success:false, message:'There were some errors :('})
+          return next(err)
+        }
+        const id = author._id
+        const opts = {}
+        opts.expiresIn = 60*60*24*5
+        const secret = process.env.SECRET;
+        const token = jwt.sign({"userid":id},secret,opts);
+        return res.send({success:true, user:author, token:"Bearer "+token })
+        
+
+      })
+      if(err){
+        res.status(400).send({success:false, message:'There were some errors :('})        
+        return next(err)
+      }
+      
+    })
+
+
+  }
 
 
   
@@ -14,29 +49,38 @@ exports.author_signup_post = [
 exports.author_login_post = [
 
   (req,res,next)=>{
-    let {username, password } = req.body
-    console.log(req.body);
-
-    if(username === 'bawa'){
-      if(password == 'admin'){
-        const opts = {};
-        opts.expiresIn = 60*60*24*5;
-        const secret = process.env.SECRET;
-        const token = jwt.sign({username},secret,opts)
-        return res.status(200).json({
-          message:'auth passed',
-          token
+   
+    try {
+      Author.findOne({'username':req.body.username},function(err,user){
+        if(err){return next(err)}
+        if(!user){return res.status(401).json({message:"username not found"})}
+        bcrypt.compare(req.body.password, user.password,(err,pass)=>{
+          const opts = {}
+          opts.expiresIn = 60*60*24*5
+          const secret = process.env.SECRET;
+          const token = jwt.sign({"userid":user._id},secret,opts);
+          if(err){return next(err)}
+          if(pass){
+            res.status(200).json({success:true, token: "Bearer "+token})
+          }
         })
-      }
+      })  
+    } catch (error) {
+      res.status(404).json({success:false,errors})
+      // res.redirect('../author/posts').json({message:"auth failed"})
+      return next(err);
     }
-    return res.status(401).json({message: "auth failed"})
-  }
-  
+    
+  },  
+  // passport.authenticate('jwt',{
+  //   successRedirect:'../user/posts',
+  //   failureRedirect: '/login'
+  // })
 
 ]
 
-exports.protected_get = function (req,res, next){
-  return res.status(200).send('WE GOT TO THE PROTECTED ROUTE')
+exports.protected_get = function(req,res,next){
+  res.json("this is a protected route")
 }
 
 
