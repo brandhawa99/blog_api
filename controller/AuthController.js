@@ -1,17 +1,15 @@
 const {body,validationResult,check} = require('express-validator');
 const bcrypt = require('bcryptjs');
 const Author = require('../models/Author');
-
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
 
 
+//When a new author signs up 
 exports.author_signup_post = [
 
   (req,res,next) => {
 
     bcrypt.hash(req.body.password, 10,(err,hashed) =>{
-      
       const author = new Author({
         first_name : req.body.first_name,
         last_name: req.body.last_name,
@@ -29,23 +27,16 @@ exports.author_signup_post = [
         const secret = process.env.SECRET;
         const token = jwt.sign({"userid":id},secret,opts);
         return res.send({success:true, user:author, token:"Bearer "+token })
-        
-
       })
       if(err){
         res.status(400).send({success:false, message:'There were some errors :('})        
         return next(err)
       }
-      
     })
-
-
   }
-
-
-  
 ]
 
+//When an existing author logs in 
 exports.author_login_post = [
 
   (req,res,next)=>{
@@ -66,11 +57,10 @@ exports.author_login_post = [
         })
       })  
     } catch (error) {
-      res.status(404).json({success:false,errors})
+      res.status(404).json({success:false})
       // res.redirect('../author/posts').json({message:"auth failed"})
       return next(err);
     }
-    
   },  
   // passport.authenticate('jwt',{
   //   successRedirect:'../user/posts',
@@ -78,9 +68,4 @@ exports.author_login_post = [
   // })
 
 ]
-
-exports.protected_get = function(req,res,next){
-  res.json("this is a protected route")
-}
-
 
