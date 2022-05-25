@@ -10,6 +10,4 @@ router.post('/signup',AuthController.author_signup_post);
 //Log in as an author
 router.post('/login',AuthController.author_login_post);
 
-// router.get('/protected', )
-
 module.exports = router;
