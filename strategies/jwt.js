@@ -1,14 +1,22 @@
+const Author = require('../models/Author');
+
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
-const opts = {};
 require('dotenv').config();
 
+const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.SECRET;
 
 module.exports = new JWTStrategy(opts,(jwt_payload,done) =>{
-  if(jwt_payload.username == 'bawa'){
-    return done(null,true)
-  }
-  return done(null,false);
-})
+  Author.findById(jwt_payload.userid,function(err,user){
+    if(err){
+      return done(err,false)
+    }
+    if(user){
+      return done(null,user);
+    }else{
+      return done(null,false);
+    }
+  });
+});
