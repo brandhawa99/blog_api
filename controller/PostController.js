@@ -4,7 +4,7 @@ const Comment = require('../models/Comment');
 
 //Get the 5 most recent posts for the index page
 exports.index = function (req,res,next){
-  Post.find()
+  Post.find({'public':true})
     .sort({timestamp: -1})
     .limit(5)
     .exec(function(err, results){
