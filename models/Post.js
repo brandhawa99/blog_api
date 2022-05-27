@@ -7,7 +7,7 @@ const PostSchema = new Schema({
   title:{type:String,maxlength:50, required:true},
   blog:{type:String,minlength:1, required:true},
   timestamp:{type:Date,default: Date.now()},
-  public:{type:Boolean, default:true},
+  public:{type:Boolean,required:true},
 });
 
 PostSchema
