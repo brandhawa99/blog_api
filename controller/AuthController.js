@@ -23,7 +23,7 @@ exports.author_signup_post = [
         }
         const id = author._id
         const opts = {}
-        opts.expiresIn = 60*60*24*5
+        opts.expiresIn = 1000*60*60*24*5
         const secret = process.env.SECRET;
         const token = jwt.sign({"userid":id},secret,opts);
         return res.send({success:true, user:author, token:"Bearer "+token})
@@ -46,7 +46,7 @@ exports.author_login_post = [
         if(err){return next(err)}
         if(!user){return res.status(401).json({message:"username not found"})}
         bcrypt.compare(req.body.password, user.password,(err,pass)=>{
-          const expiresIn = 60*60*24*5+Date.now();
+          const expiresIn = 1000*60*60*24*5+Date.now();
           const opts = {}
           opts.expiresIn = expiresIn;
           const secret = process.env.SECRET;
