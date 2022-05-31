@@ -10,6 +10,8 @@ router.get('/',postController.index);
 router.get('/posts', postController.posts_get);
 //gets a certain post and its comments
 router.get('/posts/:id',postController.get_post_by_id);
+//post a comment under a post
+router.post('/posts/:id', postController.post_comment);
 
 
 module.exports = router;
