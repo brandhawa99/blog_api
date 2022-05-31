@@ -12,12 +12,6 @@ function getToken (Bearertoken) {
   const decrypted = decrypt(token)
   return decrypted
 }
-/** 
- * Test protected routes 
- */
-exports.protected_get = function (req,res, next){
-  return res.status(200).send('WE GOT TO THE PROTECTED ROUTE')
-}
 
 /**
  * ---------------------------------------
@@ -30,9 +24,10 @@ exports.get_posts = function(req,res,next){
     .sort({'timestamp' : -1})
     .exec(function(err,posts){
       if(err){
-        res.send({error:err})
+        res.status(500).send({error:err})
+      }else{
+        res.send({posts:posts})
       }
-      res.send({posts:posts})
     })
 }
 
@@ -42,22 +37,76 @@ exports.get_posts = function(req,res,next){
  * ------------------------------------------
  */
 exports.post_blog = [
+
+
   (req,res,next) =>{
+    console.log(req.body);
     const decryptedToken = getToken(req.headers.authorization);
     const post = new Post ({
       author: decryptedToken.userid,
       title :req.body.title,
       blog:req.body.blog, 
       public :req.body.public
-    })
-
+    });
     post.save(function(err){
       if(err){
-        res.send({'error_message':err});
-        return next(err)
-        }
-      // res.redirect({postId : post._id})
+        next(err);  
+      }
     })
-    res.send("POSTED")
+    res.send("success")
   }
 ]
+
+exports.get_single_post = function (req,res,next){
+  Post.findById(req.params.id,function(err,post){
+    if(err){
+      res.send({errors:err})
+      next(err);
+    }
+    res.send({post:post})
+  })
+}
+
+/**
+ * -------------------------
+ * Update existing blog post
+ * -------------------------
+ */
+exports.update_blogpost = [
+
+  (req,res,next) => {
+    console.log(req.body);
+    console.log(req.params);
+    let post = new Post({
+      author:req.body.author,
+      title:req.body.title,
+      blog:req.body.blog,
+      timestamp:req.body.timestamp,
+      public: req.body.public,
+      _id: req.body.id
+    })
+
+    Post.findByIdAndUpdate(req.body.id,post,{},function(err,updated){
+      if(err){return next(err)}
+    })
+    
+    res.send("success");
+  }
+]
+
+/**
+ * -----------------
+ * Delete blog post 
+ * -----------------
+ */
+
+exports.delete_blogpost = function(req,res,next) {
+
+  Post.findByIdAndDelete(req.params.id,function(err, done){
+    if(err){
+      return next(err);
+    }
+    res.send('deleted');
+  });
+    
+  }
