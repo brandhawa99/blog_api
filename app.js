@@ -38,6 +38,9 @@ app.use(cors());
 app.use('/', indexRouter);
 app.use('/auth',authRouter);
 app.use('/author',passport.authenticate('jwt',{session:false}),authorRouter);
+app.get('*', function(req, res){
+  res.send('what???', 404);
+});
 
 // app.use(function(req,res,next){
 //   next(createError(404))
