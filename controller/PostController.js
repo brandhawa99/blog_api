@@ -5,9 +5,9 @@ const async = require('async');
 
 //Get the 5 most recent posts for the index page
 exports.index = function (req,res,next){
-  Post.find({'public':true})
+  Post.find({'public':true},{})
     .sort({"timestamp": -1})
-    .populate('author')
+    .populate('author',{'first_name':1,'last_name':1,'username':1})
     .limit(5)
     .exec(function(err, results){
       if(err){
@@ -21,7 +21,7 @@ exports.index = function (req,res,next){
 //Gets all of the posts in the database
 exports.posts_get = function(req,res,next){
   Post.find({'public':true})
-  .populate('author')
+  .populate('author',{'first_name':1,'last_name':1,'username':1})
   .sort({'timestamp':-1})
     .exec(function(err,results){
       if(err){return next(err)}
@@ -34,7 +34,7 @@ exports.get_post_by_id = function(req,res,next){
   async.parallel({
     Post: function(callback){
       Post.findById(req.params.id)
-        .populate('author')
+        .populate('author',{'first_name':1,'last_name':1,'username':1})
         .exec(callback);
     },
     Comments: function(callback){
