@@ -14,4 +14,6 @@ router.post('/posts/update',AuthorController.update_blogpost)
 
 router.post('/posts/:id/delete',AuthorController.delete_blogpost);
 
+router.post('/comment/:id/delete',AuthorController.delete_comment);
+
 module.exports = router;

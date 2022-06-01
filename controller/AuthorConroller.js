@@ -58,13 +58,23 @@ exports.post_blog = [
 ]
 
 exports.get_single_post = function (req,res,next){
-  Post.findById(req.params.id,function(err,post){
+
+  async.parallel({
+    post: function(cb){
+      Post.findById(req.params.id)
+        .exec(cb)
+    },
+    comment: function(cb){
+      Comment.find({'post':req.params.id})
+        .exec(cb)
+    },
+  },function(err,poststuff){
     if(err){
-      res.send({errors:err})
-      next(err);
+      return res.status(404).send({error:err})
     }
-    res.send({post:post})
-  })
+    res.send({post: poststuff.post, comment: poststuff.comment})
+  }
+  )
 }
 
 /**
@@ -109,4 +119,19 @@ exports.delete_blogpost = function(req,res,next) {
     res.send('deleted');
   });
     
+  }
+  
+  /**
+   * ---------------------------
+   * Delete comment under post
+   * ---------------------------
+   */
+  exports.delete_comment = function(req,res,next){
+
+    Comment.findByIdAndDelete(req.params.id,function(err,done){
+      if(err){
+        return res.send(err);
+      }
+      res.send('deleted');
+    })
   }

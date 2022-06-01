@@ -5,7 +5,7 @@ const AuthorSchema = new Schema({
   first_name:{type:String, required:true, minlength:1},
   last_name:{type:String, required:true, minlength:1},
   username:{type:String, required:true, minlength:1}, 
-  password:{type:String, required:true},
+  password:{type:String, required:true,minlength:1},
 })
 
 module.exports = mongoose.model('Author', AuthorSchema);

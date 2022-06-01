@@ -8,7 +8,8 @@ require('dotenv').config();
 
 const passport = require("passport");
 const JWTStrategy = require("./strategies/jwt")
-
+const compression = require('compression');
+const helmet = require('helmet');
 //connect to database
 const mongodb = process.env.mongo_URI
 mongoose.connect(mongodb,{useUnifiedTopology:true,useNewUrlParser:true});
@@ -29,6 +30,8 @@ app.use(passport.initialize());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.options('*',cors());
+app.use(compression());
+app.use(helmet());
 app.use(cors());
 
 
