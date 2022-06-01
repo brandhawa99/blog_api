@@ -40,7 +40,7 @@ exports.get_post_by_id = function(req,res,next){
     Comments: function(callback){
       Comment.find({'post':req.params.id})
       //order the comments where the newest ones are at the top
-        .sort({'timestamp':-1})
+        .sort({'timestamp':1})
         .exec(callback);
     }
   },function(err,results){
