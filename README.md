@@ -15,3 +15,5 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 
 ## Running loaclly 
 1. clone and install all npm packages 
+2. type  ``` npm run serverStart ``` into the command line of the api folder
+3. 
