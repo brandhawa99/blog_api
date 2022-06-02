@@ -12,3 +12,6 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 - [API](https://github.com/brandhawa99/blog_api)
 - [Client](https://github.com/brandhawa99/blog_client)
 - [CMS](https://github.com/brandhawa99/blog_cms) 
+
+## Running loaclly 
+1. clone and install all npm packages 
