@@ -9,3 +9,6 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 - [Link to CMS](https://blog-cms-brandhawa.netlify.app/)
 
 ## Repository Links 
+- [API](https://github.com/brandhawa99/blog_api)
+- [Client](https://github.com/brandhawa99/blog_client)
+- [CMS](https://github.com/brandhawa99/blog_cms) 
