@@ -15,7 +15,7 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 
 ## Running loaclly 
 ### API Repo 
-1. clone and install all npm packages 
+1. clone then install all npm packages with ```npm install```
 2. type  ``` npm run serverStart ``` into the command line of the api folder
 ### CMS AND CLIENT Repos
 1. clone then install all npm packages with ```npm install```
