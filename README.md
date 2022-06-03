@@ -1,4 +1,6 @@
 # blog_api
+This is the second last big project for The Odin Project.
+This is primarily a backend project, where we create the api of a blog site, but we also create a front-end to display the data from the mongoDb database. 
 
 This is part of my MERN(mongodb, expressjs, reactjs, node) app
 
