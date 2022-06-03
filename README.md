@@ -19,5 +19,6 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 2. type  ``` npm run serverStart ``` into the command line of the api folder
 ### CMS AND CLIENT Repos
 1. clone then install all npm packages with ```npm install```
-2. change all of the protocals and domains wherever there are fetch requests 
-3. ``` npm run start``` you should be able to run and make changes to the database locally
+2. change all of the protocals and domains wherever there are fetch requests
+  - ```await fetch('https://agile-mesa.herokuapp.com/``` Will become ```http://localhost:3000/```
+4. ``` npm run start``` you should be able to run and make changes to the database locally
