@@ -14,6 +14,10 @@ This is part of my MERN(mongodb, expressjs, reactjs, node) app
 - [CMS](https://github.com/brandhawa99/blog_cms) 
 
 ## Running loaclly 
+### API Repo 
 1. clone and install all npm packages 
 2. type  ``` npm run serverStart ``` into the command line of the api folder
-3. 
+### CMS AND CLIENT Repos
+1. clone then install all npm packages with ```npm install```
+2. change all of the protocals and domains wherever there are fetch requests 
+3. ``` npm run start``` you should be able to run and make changes to the database locally
