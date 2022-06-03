@@ -1,4 +1,4 @@
-# blog_api
+# Blog API
 This is part of my MERN(mongodb, expressjs, reactjs, node) app
 
 This is the second last big project for The Odin Project.
