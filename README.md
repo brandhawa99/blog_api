@@ -22,5 +22,5 @@ This is primarily a backend project, where we create the api of a blog site, but
 ### CMS AND CLIENT Repos
 1. clone then install all npm packages with ```npm install```
 2. change all of the protocals and domains wherever there are fetch requests
-    - ```await fetch('https://agile-mesa.herokuapp.com/``` Will become ```await fetch(http://localhost:3000/)```
+    - ```await fetch('https://agile-mesa.herokuapp.com/``` Should be changed to ```await fetch(http://localhost:3000/)```
 3. ``` npm run start``` you should be able to run and make changes to the database locally
