@@ -1,37 +1,38 @@
-const {body,validationResult,check} = require('express-validator');
+const {body,validationResult} = require('express-validator');
 const Post = require('../models/Post');
 const Comment = require('../models/Comment');
-const async = require('async');
+const Async = require('async');
 
 //Get the 5 most recent posts for the index page
-exports.index = function (req,res,next){
-  Post.find({'public':true},{})
-    .sort({"timestamp": -1})
-    .populate('author',{'first_name':1,'last_name':1,'username':1})
-    .limit(5)
-    .exec(function(err, results){
-      if(err){
-        res.send(err);
-        next(err);
-      }
-      res.send(results);
-    })
+exports.index = async function (req,res,next){
+  try {
+    const posts = await Post.find({'public': true}, 'title timestamp')
+      .sort({'timestamp':1})
+      .populate('author','first_name, last_name, username')
+      .limit(5)
+      .exec(); 
+    res.status(200).send(posts);
+  } catch (error) {
+    res.status(500).send({error:"Nothing found"})
+    
+  } 
 }
 
 //Gets all of the posts in the database
-exports.posts_get = function(req,res,next){
-  Post.find({'public':true})
-  .populate('author',{'first_name':1,'last_name':1,'username':1})
-  .sort({'timestamp':-1})
-    .exec(function(err,results){
-      if(err){return next(err)}
-      res.send(results);
-    })
+exports.posts_get = async function(req,res,next){
+  try {
+    const posts = await Post.find({'public':true}, 'title blog timestamp')
+      .populate('author', 'first_name last_name username')
+      .sort({'timestamp':1})
+      .exec()
+    res.status(200).send(posts);
+  } catch (error) {
+    res.status(500).send({error:"Nothing found"})    
+  }
 }
 //Get the specific post and all of its comments; 
-exports.get_post_by_id = function(req,res,next){
-
-  async.parallel({
+exports.get_post_by_id = async function(req,res,next){
+  Async.parallel({
     Post: function(callback){
       Post.findById(req.params.id)
         .populate('author',{'first_name':1,'last_name':1,'username':1})
@@ -40,7 +41,7 @@ exports.get_post_by_id = function(req,res,next){
     Comments: function(callback){
       Comment.find({'post':req.params.id})
       //order the comments where the newest ones are at the top
-        .sort({'timestamp':1})
+        .sort({'timestamp':-1})
         .exec(callback);
     }
   },function(err,results){
@@ -55,7 +56,7 @@ exports.post_comment = [
   body('comment').trim().isLength({min:1}).escape().withMessage('Message Required')
     .isLength({max:750}).withMessage('Message is too long'),
 
-  (req,res,next) =>{
+  async (req,res,next) =>{
     const errors = validationResult(req)
     const comment = new Comment({
       post: req.params.id,
