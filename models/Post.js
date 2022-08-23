@@ -8,7 +8,7 @@ const PostSchema = new Schema({
   blog:{type:String,minlength:1, required:true},
   timestamp:{type:Date,default: Date.now()},
   public:{type:Boolean,required:true},
-});
+},{timestamps:true});
 
 PostSchema
 .virtual('date')
