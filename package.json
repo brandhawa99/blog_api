@@ -9,7 +9,7 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "serverStart": "DEBUG=blog-api:* npm run dev",
-    "test": "jest --detectOpenHandles"
+    "test": "jest"
   },
   "dependencies": {
     "async": "^3.2.3",
@@ -25,6 +25,7 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "luxon": "^2.4.0",
+    "mongodb-memory-server": "^8.9.0",
     "mongoose": "^6.3.3",
     "morgan": "~1.9.1",
     "passport": "^0.5.3",
