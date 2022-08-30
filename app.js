@@ -11,10 +11,10 @@ const JWTStrategy = require("./strategies/jwt")
 const compression = require('compression');
 const helmet = require('helmet');
 //connect to database
-const mongodb = process.env.mongo_URI
-mongoose.connect(mongodb,{useUnifiedTopology:true,useNewUrlParser:true});
-const db = mongoose.connection;
-db.on('error',console.error.bind(console,'mongo connection error'));
+// const mongodb = process.env.mongo_URI
+// mongoose.connect(mongodb,{useUnifiedTopology:true,useNewUrlParser:true});
+// const db = mongoose.connection;
+// db.on('error',console.error.bind(console,'mongo connection error'));
 
 passport.use(JWTStrategy)
 
@@ -31,7 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.options('*',cors());
 app.use(compression());
-app.use(helmet());
+// app.use(helmet());
 app.use(cors());
 
 
@@ -39,7 +39,7 @@ app.use('/', indexRouter);
 app.use('/auth',authRouter);
 app.use('/author',passport.authenticate('jwt',{session:false}),authorRouter);
 app.get('*', function(req, res){
-  res.send('what???', 404);
+  res.status(404).send('what???');
 });
 
 // app.use(function(req,res,next){
