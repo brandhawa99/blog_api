@@ -7,13 +7,17 @@ const CommentSchema = new Schema({
   name:{type:String, required:true, minlength:1},
   message:{type:String, required:true, minlength:1,maxlength:1500},
   timestamp:{type:Date, required:true, default:Date.now()}
-},{timestamps:true});
+},
+{
+  toJSON:{virtuals:true},
+  timestamps:true
+});
 
 CommentSchema
-.virtual('formated_date')
-.get(function(){
-  let date = DateTime.fromJSDate(this.timestamp).toLocaleDateString(DateTime.DATETIME_MED_WITH_SECONDS);
-  return date;
+  .virtual('formatted_date')
+  .get(function(){
+    let date = DateTime.fromJSDate(this.timestamp).toLocaleString(DateTime.DATETIME_MED);
+    return date;
 })
 
 module.exports = mongoose.model('Comment',CommentSchema);
