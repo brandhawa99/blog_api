@@ -7,7 +7,7 @@ const postController = require('../controller/PostController');
 //gets home page which gets the 5 most recent posts
 router.get('/',postController.index);
 //gets all the posts
-router.get('/posts', postController.posts_get);
+router.get('/posts', postController.get_posts);
 //gets a certain post and its comments
 router.get('/posts/:id',postController.get_post_by_id);
 //post a comment under a post
