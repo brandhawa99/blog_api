@@ -9,7 +9,7 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
     "serverStart": "DEBUG=blog-api:* npm run dev",
-    "test": "jest --watch"
+    "test": "jest"
   },
   "dependencies": {
     "async": "^3.2.3",
