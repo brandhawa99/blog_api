@@ -1,35 +1,39 @@
-const {body,validationResult,check} = require('express-validator');
-const Author = require('../models/Author');
-const Post = require('../models/Post');
-const Comment = require('../models/Comment');
-const async = require('async');
-const decrypt = require('jwt-decode');
+const {
+  body,
+  header,
+  param,
+  validationResult,
+  check,
+} = require("express-validator");
+const Author = require("../models/Author");
+const Post = require("../models/Post");
+const Comment = require("../models/Comment");
+const async = require("async");
+const decrypt = require("jwt-decode");
 
-
-//function used to decrypt token on requests 
-function getToken (Bearertoken) {
-  const token = Bearertoken.split(' ')[1];
-  const decrypted = decrypt(token)
-  return decrypted
+//function used to decrypt token on requests
+function getToken(Bearertoken) {
+  const token = Bearertoken.split(" ")[1];
+  const decrypted = decrypt(token);
+  return decrypted;
 }
 
 /**
  * ---------------------------------------
- * Get all the posts for the current user 
+ * Get all the posts for the current user
  * ---------------------------------------
  */
-exports.get_posts = function(req,res,next){
-  const decryptedToken = getToken(req.headers.authorization);
-  Post.find({'author':decryptedToken.userid})
-    .sort({'timestamp' : -1})
-    .exec(function(err,posts){
-      if(err){
-        res.status(500).send({error:err})
-      }else{
-        res.send({posts:posts})
-      }
-    })
-}
+exports.get_posts = async function (req, res) {
+  try {
+    const decryptedToken = getToken(req.headers.authorization);
+    let posts = await Post.find({ author: decryptedToken.userid })
+      .sort({ timestamp: -1 })
+      .exec();
+    res.status(200).send({ posts: posts });
+  } catch (error) {
+    res.status(404).send({ error: "couldn't get posts" });
+  }
+};
 
 /**
  * -----------------------------------------
@@ -37,45 +41,78 @@ exports.get_posts = function(req,res,next){
  * ------------------------------------------
  */
 exports.post_blog = [
-
-
-  (req,res,next) =>{
-    console.log(req.body);
-    const decryptedToken = getToken(req.headers.authorization);
-    const post = new Post ({
-      author: decryptedToken.userid,
-      title :req.body.title,
-      blog:req.body.blog, 
-      public :req.body.public
-    });
-    post.save(function(err){
-      if(err){
-        next(err);  
-      }
-    })
-    res.send("success")
-  }
-]
-
-exports.get_single_post = function (req,res,next){
-
-  async.parallel({
-    post: function(cb){
-      Post.findById(req.params.id)
-        .exec(cb)
-    },
-    comment: function(cb){
-      Comment.find({'post':req.params.id})
-        .exec(cb)
-    },
-  },function(err,poststuff){
-    if(err){
-      return res.status(404).send({error:err})
+  body("title")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("title required"),
+  body("blog")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("blog post is required"),
+  body("public")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("public is required"),
+  async (req, res) => {
+    try {
+      const decryptedToken = getToken(req.headers.authorization);
+      const post = new Post({
+        author: decryptedToken.userid,
+        title: req.body.title,
+        blog: req.body.blog,
+        public: req.body.public,
+      });
+      await post.save();
+      res.status(200).send({ msg: "post created", post: post });
+    } catch (error) {
+      res.status(400).send({ msg: "error creating post" });
     }
-    res.send({post: poststuff.post, comment: poststuff.comment})
-  }
-  )
-}
+  },
+];
+
+exports.get_single_post = [
+  param("id")
+    .escape()
+    .trim()
+    .isLength({ min: 24 })
+    .withMessage("id error")
+    .isLength({ max: 24 })
+    .withMessage("id error"),
+
+  async (req, res) => {
+    try {
+      const errors = validationResult(req);
+      const hasErrors = !errors.isEmpty();
+      if (hasErrors) {
+        return res.status(400).send(errors);
+      }
+
+      let results = await async.parallel({
+        post: function (callback) {
+          Post.findById(req.params.id, "title blog public timestamp").exec(
+            callback
+          );
+        },
+        comment: function (callback) {
+          Comment.find({ post: req.params.id }, {}).exec(callback);
+        },
+      });
+      if (results.post == null || results.comment == null) {
+        throw new Error();
+      }
+      return res
+        .status(200)
+        .send({ post: results.post, comment: results.comment });
+    } catch (error) {
+      return res
+        .status(400)
+        .send({ error: "there was an error getting the post and comments" });
+    }
+  },
+];
 
 /**
  * -------------------------
@@ -83,55 +120,85 @@ exports.get_single_post = function (req,res,next){
  * -------------------------
  */
 exports.update_blogpost = [
+  body("title")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("title required"),
+  body("blog")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("blog post is required"),
+  body("timestamp")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("timestamp is required"),
+  body("public")
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage("public is required"),
+  body("id").trim().isLength({ min: 1 }).escape().withMessage("id is required"),
 
-  (req,res,next) => {
-    console.log(req.body);
-    console.log(req.params);
-    let post = new Post({
-      author:req.body.author,
-      title:req.body.title,
-      blog:req.body.blog,
-      timestamp:req.body.timestamp,
-      public: req.body.public,
-      _id: req.body.id
-    })
-
-    Post.findByIdAndUpdate(req.body.id,post,{},function(err,updated){
-      if(err){return next(err)}
-    })
-    
-    res.send("success");
-  }
-]
+  async (req, res) => {
+    try {
+      const error = validationResult(req);
+      const hasErrors = !error.isEmpty();
+      if (hasErrors) {
+        return res.status(400).send(error);
+      }
+      const decryptedToken = getToken(req.headers.authorization);
+      let post = new Post({
+        author: decryptedToken.userid,
+        title: req.body.title,
+        blog: req.body.blog,
+        timestamp: req.body.timestamp,
+        public: req.body.public,
+        _id: req.body.id,
+      });
+      let updatePost = await Post.findByIdAndUpdate(
+        req.body.id,
+        post,
+        {}
+      ).exec();
+      res.status(200).send(post);
+    } catch (error) {
+      res.status(400).send({ msg: "could not update post" });
+    }
+  },
+];
 
 /**
  * -----------------
- * Delete blog post 
+ * Delete blog post
  * -----------------
  */
 
-exports.delete_blogpost = function(req,res,next) {
-
-  Post.findByIdAndDelete(req.params.id,function(err, done){
-    if(err){
-      return next(err);
+exports.delete_blogpost = async (req, res, next) => {
+  try {
+    const decryptedToken = getToken(req.headers.authorization);
+    if (decryptedToken.userid != req.body.authorID) {
+      return res.status(400).send({ msg: "not authorized" });
     }
-    res.send('deleted');
-  });
-    
+    let post = await Post.findByIdAndDelete(req.params.id).exec();
+    res.status(200).send({ msg: "post deleted" });
+  } catch (error) {
+    res.status(400).send({ msg: "error deleting blog post" });
   }
-  
-  /**
-   * ---------------------------
-   * Delete comment under post
-   * ---------------------------
-   */
-  exports.delete_comment = function(req,res,next){
+};
 
-    Comment.findByIdAndDelete(req.params.id,function(err,done){
-      if(err){
-        return res.send(err);
-      }
-      res.send('deleted');
-    })
+/**
+ * ---------------------------
+ * Delete comment under post
+ * ---------------------------
+ */
+exports.delete_comment = async (req, res) => {
+  try {
+    await Comment.findByIdAndDelete(req.params.id).exec();
+    return res.status(200).send({ msg: "comment deleted" });
+  } catch (error) {
+    res.status(400).send({ msg: "error deleting comment" });
   }
+};
