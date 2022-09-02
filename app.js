@@ -9,7 +9,6 @@ const passport = require("passport");
 const JWTStrategy = require("./strategies/jwt");
 const compression = require("compression");
 const helmet = require("helmet");
-require("./mongoConfig");
 
 passport.use(JWTStrategy);
 
