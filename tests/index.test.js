@@ -1,18 +1,15 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
-const mongoTest = require("./mongoConfigTesting");
-beforeAll(async () => {
-  await mongoTest.initialize();
-  await db.setupData();
-});
 
-afterEach(async () => {
-  await mongoTest.dropCollections;
+let DATA;
+beforeAll(async () => {
+  await db.setUp();
+  DATA = await db.initializeData();
 });
 
 afterAll(async () => {
-  await mongoTest.dropDatabase;
+  await db.dropDatabase();
 });
 
 describe("Get Posts for api client", () => {
@@ -22,9 +19,6 @@ describe("Get Posts for api client", () => {
       .get("/")
       .expect("Content-Type", /json/)
       .expect(200);
-    expect((res) => {
-      res.body.length === 5;
-    });
   });
 
   test("GET /posts", async () => {
@@ -52,13 +46,11 @@ describe("Get Posts for api client", () => {
 });
 
 describe("POST a add comment", () => {
-  let post;
-  let res;
   test("POST/", async () => {
-    post = await request(app).get("/");
+    let post = await request(app).get("/").expect(200);
     let id = post.body[0]._id;
 
-    res = await request(app)
+    let res = await request(app)
       .post(`/posts/${id}`)
       .set("Content-Type", "application/json")
       .send({ name: "test_name", comment: "this is a test comment" })

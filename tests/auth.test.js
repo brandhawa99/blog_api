@@ -1,21 +1,16 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
-const mongoTest = require("./mongoConfigTesting");
 const faker = require("@faker-js/faker").faker;
 
+let DATA;
 beforeAll(async () => {
-  await mongoTest.initialize();
-  await db.setupData();
-});
-
-afterEach(async () => {
-  await mongoTest.dropCollections;
+  await db.setUp();
+  DATA = await db.initializeData();
 });
 
 afterAll(async () => {
-  await mongoTest.dropCollections;
-  await mongoTest.dropDatabase;
+  await db.dropDatabase();
 });
 
 describe("Sign up user", () => {
