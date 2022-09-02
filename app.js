@@ -5,16 +5,11 @@ var logger = require("morgan");
 var cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
 const passport = require("passport");
 const JWTStrategy = require("./strategies/jwt");
 const compression = require("compression");
 const helmet = require("helmet");
-//connect to database
-// const mongodb = process.env.mongo_URI
-// mongoose.connect(mongodb,{useUnifiedTopology:true,useNewUrlParser:true});
-// const db = mongoose.connection;
-// db.on('error',console.error.bind(console,'mongo connection error'));
+require("./mongoConfig");
 
 passport.use(JWTStrategy);
 
