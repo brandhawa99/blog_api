@@ -9,10 +9,13 @@ beforeAll(async () => {
   await db.setupData();
 });
 
+afterEach(async () => {
+  await mongoTest.dropCollections;
+});
+
 afterAll(async () => {
   await mongoTest.dropCollections;
   await mongoTest.dropDatabase;
-  await mongoTest.close();
 });
 
 describe("Sign up user", () => {

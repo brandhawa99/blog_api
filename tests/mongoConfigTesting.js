@@ -14,20 +14,20 @@ exports.initialize = async function initializeMongoServer() {
   db.on("error", console.error.bind(console, "mongo connection error"));
 };
 
-exports.close = async function closeConnection() {
-  await mongoose.connection.close();
-};
-
 module.exports.dropDatabase = async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-  await mongo.stop();
+  if (mongoServer) {
+    await mongoose.connection.dropDatabase();
+    await mongoose.connection.close();
+    await mongoServer.stop();
+  }
 };
 
 module.exports.dropCollections = async () => {
-  const { collections } = mongoose.connection;
+  if (mongoServer) {
+    const { collections } = mongoose.connection;
 
-  Object.keys(collections).forEach(async (key) => {
-    await collections[key].deleteMany();
-  });
+    Object.keys(collections).forEach(async (key) => {
+      await collections[key].deleteMany();
+    });
+  }
 };

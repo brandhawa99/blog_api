@@ -7,10 +7,12 @@ beforeAll(async () => {
   await db.setupData();
 });
 
-afterAll(async () => {
+afterEach(async () => {
   await mongoTest.dropCollections;
+});
+
+afterAll(async () => {
   await mongoTest.dropDatabase;
-  await mongoTest.close();
 });
 
 describe("Get Posts for api client", () => {
