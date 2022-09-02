@@ -1,14 +1,19 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
+const mongoTest = require("../mongoConfigTesting");
+const closeConnection = require("../mongoConfigTesting");
+const faker = require("@faker-js/faker").faker;
+mongoTest.initialize();
 
 beforeAll(async () => {
-  await db.setUp();
   await db.setupData();
 });
 
 afterAll(async () => {
-  await db.dropDatabase();
+  await mongoTest.dropCollections;
+  await mongoTest.dropDatabase;
+  await mongoTest.close();
 });
 
 describe("Sign up user", () => {
@@ -16,12 +21,13 @@ describe("Sign up user", () => {
   let user;
 
   test("POST /auth/signup create a user", async () => {
+    let username = faker.internet.userName();
     res = await request(app)
       .post("/auth/signup")
       .send({
         first_name: "testFirst",
         last_name: "testLast",
-        username: "testUser321",
+        username: username,
         password: "password",
         password2: "password",
       })
@@ -92,7 +98,6 @@ describe("Basic author request", () => {
       .get("/author/posts/" + post.body.post._id)
       .set({ Authorization: token })
       .expect(200);
-    console.log(post.body.post);
     expect(post.body.post).toHaveProperty("title");
     expect(post.body.post).toHaveProperty("blog");
     expect(post.body.post).toHaveProperty("date");
@@ -147,6 +152,13 @@ describe("Basic author request", () => {
       .set({ Authorization: token })
       .expect(200);
     post = post.body.posts[0];
+
+    await request(app)
+      .post("/posts/" + post._id)
+      .send({
+        name: "this is a commenter",
+        comment: "This is a comment from a commenter",
+      });
 
     let comment = await request(app)
       .get("/author/posts/" + post._id)

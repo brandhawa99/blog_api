@@ -1,23 +1,8 @@
 const mongoose = require("mongoose");
-const { MongoMemoryServer } = require("mongodb-memory-server");
 const Author = require("../models/Author");
 const Post = require("../models/Post");
 const Comment = require("../models/Comment");
 const bcrypt = require("bcryptjs");
-
-let mongo;
-
-module.exports.setUp = async () => {
-  mongo = await MongoMemoryServer.create();
-  const url = mongo.getUri();
-  await mongoose.connect(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  const db = mongoose.connection;
-  db.on("error", console.error.bind(console, "mongo connection error"));
-};
 
 module.exports.setupData = async () => {
   try {
@@ -116,6 +101,7 @@ module.exports.setupData = async () => {
       post6,
       post7,
       post8,
+      comment1,
     };
   } catch (error) {
     console.log(error);
@@ -123,18 +109,7 @@ module.exports.setupData = async () => {
 };
 
 module.exports.dropDatabase = async () => {
-  if (mongo) {
-    await mongoose.connection.dropDatabase();
-    await mongoose.connection.close();
-    await mongo.stop();
-  }
-};
-
-module.exports.dropCollections = async = () => {
-  if (mongo) {
-    const { collections } = mongoose.connection();
-    Object.keys(collections).forEach(async (key) => {
-      await collections[key].deleteMany();
-    });
-  }
+  await mongoose.connection.dropDatabase();
+  await mongoose.connection.close();
+  await mongo.stop();
 };

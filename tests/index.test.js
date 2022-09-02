@@ -1,14 +1,16 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
-
+const mongoTest = require("../mongoConfigTesting");
+mongoTest.initialize;
 beforeAll(async () => {
-  await db.setUp();
   await db.setupData();
 });
 
 afterAll(async () => {
-  await db.dropDatabase();
+  await mongoTest.dropCollections;
+  await mongoTest.dropDatabase;
+  await mongoTest.close();
 });
 
 describe("Get Posts for api client", () => {
@@ -39,9 +41,7 @@ describe("Get Posts for api client", () => {
     let id = res.body[0]._id;
 
     res = await request(app).get(`/posts/${id}`).expect(200);
-    expect(res.body.post.author.first_name).toBe("name");
-    expect(res.body.post.author.last_name).toBe("name");
-    expect(res.body.post.author.username).toBe("user1");
+    expect(res.body.post.author).toHaveProperty("first_name");
   });
 
   test("GET /post/:id 'where id is random'", async () => {
