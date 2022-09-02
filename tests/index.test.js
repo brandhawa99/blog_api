@@ -1,9 +1,9 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
-const mongoTest = require("../mongoConfigTesting");
-mongoTest.initialize;
+const mongoTest = require("./mongoConfigTesting");
 beforeAll(async () => {
+  await mongoTest.initialize();
   await db.setupData();
 });
 

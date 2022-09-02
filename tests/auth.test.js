@@ -1,12 +1,11 @@
 const request = require("supertest");
 const db = require("./db");
 const app = require("../app");
-const mongoTest = require("../mongoConfigTesting");
-const closeConnection = require("../mongoConfigTesting");
+const mongoTest = require("./mongoConfigTesting");
 const faker = require("@faker-js/faker").faker;
-mongoTest.initialize();
 
 beforeAll(async () => {
+  await mongoTest.initialize();
   await db.setupData();
 });
 
@@ -19,9 +18,9 @@ afterAll(async () => {
 describe("Sign up user", () => {
   let res;
   let user;
+  let username = faker.internet.userName();
 
   test("POST /auth/signup create a user", async () => {
-    let username = faker.internet.userName();
     res = await request(app)
       .post("/auth/signup")
       .send({
@@ -40,7 +39,7 @@ describe("Sign up user", () => {
       .send({
         first_name: "testFirst",
         last_name: "testLast",
-        username: "testUser321",
+        username: username,
         password: "password",
         password2: "password",
       })
