@@ -109,7 +109,7 @@ exports.author_login_post = [
         );
         if (!passwordCheck) {
           throw new Error(
-            "incorrect password " + user.password + req.body.password
+            "incorrect password "
           );
         }
         return Promise.resolve();
