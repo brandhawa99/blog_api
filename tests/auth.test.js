@@ -120,9 +120,8 @@ describe("Basic author request", () => {
 
   test("POST /author/posts/:id/delete, where id's do not match", async () => {
     let deleted = await request(app)
-      .post("/author/posts/" + updatedPost.body._id + "/delete")
+      .post("/author/posts/" + updatedPost.body._id + "asdfasdfa" + "/delete")
       .set({ Authorization: token })
-      .send({ authorID: updatedPost.body.author + 1234123 })
       .expect(400);
     expect(deleted.body).toHaveProperty("msg");
   });
@@ -131,7 +130,6 @@ describe("Basic author request", () => {
     let deleted = await request(app)
       .post("/author/posts/" + updatedPost.body._id + "/delete")
       .set({ Authorization: token })
-      .send({ authorID: updatedPost.body.author })
       .expect(200);
     expect(deleted.body.msg).toBe("post deleted");
   });
