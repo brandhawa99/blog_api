@@ -177,18 +177,22 @@ exports.update_blogpost = [
  */
 
 exports.delete_blogpost = [
-  param("id").escape().trim("invalid post"),
   header("authorization").custom(async (token, { req }) => {
     try {
       const decryptedToken = getToken(token);
+      let id = req.params.id + "";
+
       let user = await Author.findById(decryptedToken.userid).exec();
-      let post = await Post.findById(req.params.id).exec();
+      let post = await Post.findById(id).exec();
+
       let same = user._id.equals(post.author);
       if (!same) {
         return Promise.reject("not authorized to delete post");
       }
       return Promise.resolve();
-    } catch (error) {}
+    } catch (error) {
+      return Promise.reject("there was an error");
+    }
   }),
 
   async (req, res, next) => {
@@ -196,7 +200,7 @@ exports.delete_blogpost = [
       const errors = validationResult(req);
       const hasErrors = !errors.isEmpty();
       if (hasErrors) {
-        return res.status(400).send({ msg: "not authorized" });
+        return res.status(400).send(errors);
       }
       await Post.findByIdAndDelete(req.params.id).exec();
       res.status(200).send({ msg: "post deleted" });

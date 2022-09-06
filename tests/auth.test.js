@@ -123,7 +123,7 @@ describe("Basic author request", () => {
       .post("/author/posts/" + updatedPost.body._id + "asdfasdfa" + "/delete")
       .set({ Authorization: token })
       .expect(400);
-    expect(deleted.body).toHaveProperty("msg");
+    expect(deleted.body.errors[0]).toHaveProperty("msg");
   });
 
   test("POST /author/posts/:id/delete", async () => {
