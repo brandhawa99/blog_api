@@ -1,8 +1,22 @@
 # Blog API
-**This is part of my MERN(mongodb, expressjs, reactjs, node) app. Also the authetication is with Passport(JWT-strategy)**
+[Live App](https://agile-mesa-41864.herokuapp.com/)
+![image](https://user-images.githubusercontent.com/35308786/188825223-84b0cf7e-737a-4198-8f14-17c45bbc4826.png)
 
-This is the second last big project for The Odin Project.
-This is primarily a backend project, where we create the api of a blog site, but we also create a front-end to display the data from the mongodb database. There are two parts to the api, the first part is for the where the users can view posts and leave comments (Client). The second part is where the authors can views all their posts (public or private), they have the ability to makes changes to those posts and manage the comments (Content Management System). 
+### Description
+In this project I created a Restful blog API with expressjs. There are 2 major routes, a route for a client, and a route for a content management system. The client route lets you see all of the public posts. and then leave comments on them. The content management route lets you create an account, create, update, delete posts, also you get to manage the comments under your post. The posts, users, and comments are saved in a mongodb database. Authorization is handled by passportjs (JWT Strategy). 
+
+##### Technologies 
+This api is built in nodejs with the expressjs framework becuase of its popularity. I used MongoDB for the database, and mongoose to interact with it. Authetication is taken care of with Passportjs(JWT Strategy). I used supertest and jest for api testing. 
+
+#### Challenges
+Learning how to test the api routes and setting up test database was difficult, and I didn't do the best job. I definatley tested unnecessary routes, I shoud assume they work because they are functions from other packages and have their own test. Shouuld have focused more on testing things that I created. 
+
+### Goals
+- [x] Learn how to build a Restful api 
+- [x] Learn how to test an api 
+- [x] Learn how to host an api on heroku 
+- [x] Implement async/await functions
+- [x] Learn how to validate incoming request 
 
 ### Working Links
 
@@ -14,6 +28,8 @@ This is primarily a backend project, where we create the api of a blog site, but
 - [API](https://github.com/brandhawa99/blog_api)
 - [Client](https://github.com/brandhawa99/blog_client)
 - [CMS](https://github.com/brandhawa99/blog_cms) 
+
+
 
 ## Running loaclly 
 ### API Repo 
