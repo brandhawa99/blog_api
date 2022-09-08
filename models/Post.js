@@ -17,7 +17,7 @@ const PostSchema = new Schema(
 );
 
 PostSchema.virtual("date").get(function () {
-  let date = DateTime.fromJSDate(this.timestamp).toLocaleString(
+  let date = DateTime.fromJSDate(this.createdAt).toLocaleString(
     DateTime.DATETIME_MED
   );
   return date;

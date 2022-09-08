@@ -7,7 +7,7 @@ const async = require("async");
 exports.index = async function (req, res, next) {
   try {
     const posts = await Post.find({ public: true }, "title timestamp")
-      .sort({ timestamp: 1 })
+      .sort({ timestamp: -1 })
       .populate("author", "first_name last_name")
       .limit(5)
       .exec();
@@ -22,7 +22,7 @@ exports.get_posts = async function (req, res, next) {
   try {
     const posts = await Post.find({ public: true }, "title blog timestamp")
       .populate("author", "first_name last_name")
-      .sort({ timestamp: 1 })
+      .sort({ timestamp: -1 })
       .exec();
     res.status(200).send(posts);
   } catch (error) {
@@ -77,13 +77,11 @@ exports.get_post_by_id = [
       if (results.Post == null || results.Comments == null) {
         throw new Error();
       }
-      res
-        .status(200)
-        .send({
-          post: results.Post,
-          date: results.Post.date,
-          comments: results.Comments,
-        });
+      res.status(200).send({
+        post: results.Post,
+        date: results.Post.date,
+        comments: results.Comments,
+      });
     } catch (error) {
       res.status(404).send({ msg: "error getting post" });
     }
