@@ -20,7 +20,7 @@ Learning how to test the api routes and setting up test database was difficult, 
 
 ### Working Links
 
-- [Link to API](https://agile-mesa-41864.herokuapp.com/)
+- [Link to API](https://blog-api-h9xk.onrender.com/)
 - [Link to Client](https://blog-client-brandhawa.netlify.app/)
 - [Link to CMS](https://blog-cms-brandhawa.netlify.app/)
 
